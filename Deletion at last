@@ -1,0 +1,97 @@
+#include <iostream> 
+#include <cstdlib> 
+
+using namespace std; 
+
+struct node { 
+    int data; 
+    struct node* next; 
+}; 
+
+struct node *start = NULL; 
+struct node *ptr = NULL; 
+int val; 
+
+void display() { 
+    ptr = start; 
+    while (ptr != NULL) { 
+        cout << ptr->data << "->"; 
+        ptr = ptr->next; 
+    } 
+    cout << "NULL\n"; 
+} 
+
+void createnode() { 
+    cout << "Input value to insert: "; 
+    cin >> val; 
+    struct node* newnode = (struct node*)malloc(sizeof(struct node)); 
+    newnode->data = val; 
+    newnode->next = NULL; 
+    
+    if (start == NULL) { 
+        start = newnode; 
+    } else { 
+        ptr = start; 
+        while (ptr->next != NULL) { 
+            ptr = ptr->next; 
+        } 
+        ptr->next = newnode; 
+    } 
+} 
+
+// Renamed to accurately reflect deletion from the end (last node)
+void deletelast() { 
+    // Case 1: Empty list
+    if (start == NULL) {
+        cout << "List is empty, nothing to delete.\n";
+        return;
+    }
+    
+    // Case 2: Only one node in the list
+    if (start->next == NULL) {
+        free(start);
+        start = NULL;
+        return;
+    }
+    
+    // Case 3: More than one node
+    ptr = start; 
+    while (ptr->next->next != NULL) { 
+        ptr = ptr->next; 
+    } 
+    
+    // Free the memory of the last node and break the link
+    free(ptr->next);
+    ptr->next = NULL; 
+} 
+
+int main() { 
+    int n; 
+    cout << "Number of nodes: "; 
+    cin >> n; 
+    
+    for (int i = 0; i < n; i++) { 
+        createnode(); 
+    } 
+    
+    cout << "\nExisting linked list is: "; 
+    display(); 
+    
+    cout << "\nNow deletion from last \n"; 
+    deletelast(); 
+    
+    cout << "After deletion at last: "; 
+    display(); 
+    
+    cout << "\nFreeing remaining memory..."; 
+    ptr = start; 
+    while (ptr != NULL) { 
+        struct node* nextnode = ptr->next; 
+        free(ptr); 
+        ptr = nextnode; 
+    } 
+    start = NULL; 
+
+    
+    return 0; 
+}
